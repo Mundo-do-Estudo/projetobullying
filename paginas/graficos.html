@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grafico com resultados do Bullying - Jornal Educacional</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* Variáveis de cores - mantendo consistência */
+        :root {
+            --lilas-claro: #e6e6fa;
+            --lilas-medio: #d8bfd8;
+            --lilas-escuro: #9370db;
+            --lilas-profundo: #6a5acd;
+            --texto-escuro: #4b0082;
+            --branco: #ffffff;
+            --offwhite: #f8f8ff;
+            --sombra: rgba(106, 90, 205, 0.2);
+            --linha: #d8bfd8;
+            --overlay: rgba(75, 0, 130, 0.9);
+        }
+        
+        /* Reset e estilos base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: var(--lilas-claro);
+            color: #333;
+            line-height: 1.6;
+            font-family: 'Merriweather', serif;
+            padding: 0;
+            margin: 0;
+            background-image: 
+                linear-gradient(rgba(230, 230, 250, 0.7), rgba(230, 230, 250, 0.7)), 
+                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h100v100H0z' fill='%239370db' fill-opacity='0.05'/%3E%3C/svg%3E");
+        }
+        
+        .galeria-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            background: var(--offwhite);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--lilas-medio);
+            padding: 30px;
+            position: relative;
+        }
+        
+        /* Cabeçalho da galeria */
+        .galeria-header {
+            text-align: center;
+            border-bottom: 3px double var(--lilas-escuro);
+            padding-bottom: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .galeria-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            color: var(--lilas-profundo);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0 0 10px;
+            text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+        }
+        
+        .galeria-subtitle {
+            font-style: italic;
+            color: var(--texto-escuro);
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Navegação de volta */
+        .nav-volta {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--lilas-medio);
+            color: var(--branco);
+            padding: 10px 15px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .nav-volta:hover {
+            background: var(--lilas-profundo);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--sombra);
+        }
+        
+        /* Filtros de categoria */
+        .filtros {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .filtro-btn {
+            background: var(--lilas-claro);
+            border: 2px solid var(--lilas-medio);
+            color: var(--texto-escuro);
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .filtro-btn:hover,
+        .filtro-btn.ativo {
+            background: var(--lilas-escuro);
+            color: var(--branco);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px var(--sombra);
+        }
+        
+        /* Grid da galeria */
+        .galeria-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        /* Item da galeria */
+        .galeria-item {
+            position: relative;
+            border: 3px solid var(--lilas-medio);
+            border-radius: 10px;
+            overflow: hidden;
+            background: var(--branco);
+            box-shadow: 5px 5px 0px var(--sombra);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .galeria-item:hover {
+            transform: translateY(-8px) rotate(1deg);
+            box-shadow: 8px 12px 0px var(--sombra);
+        }
+        
+        .galeria-item img,
+        .galeria-item video {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+        
+        .galeria-item:hover img,
+        .galeria-item:hover video {
+            transform: scale(1.05);
+        }
+        
+        /* Overlay do item */
+        .item-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, var(--overlay), transparent);
+            opacity: 0;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: var(--branco);
+        }
+        
+        .galeria-item:hover .item-overlay {
+            opacity: 1;
+        }
+        
+        .item-overlay i {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            animation: pulse 2s infinite;
+        }
+        
+        /* Legenda do item */
+        .item-legenda {
+            padding: 15px;
+            background: var(--lilas-claro);
+            font-size: 0.9rem;
+            font-style: italic;
+            text-align: center;
+            border-top: 1px solid var(--lilas-medio);
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-conteudo {
+            position: relative;
+            margin: 5% auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 800px;
+            background: var(--offwhite);
+            border-radius: 10px;
+            border: 3px solid var(--lilas-medio);
+            animation: slideIn 0.4s ease;
+        }
+        
+        .modal img,
+        .modal video {
+            width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+            border-radius: 5px;
+        }
+        
+        .modal-legenda {
+            margin-top: 15px;
+            text-align: center;
+            font-style: italic;
+            color: var(--texto-escuro);
+            font-size: 1.1rem;
+        }
+        
+        .modal-fechar {
+            color: var(--lilas-escuro);
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-fechar:hover {
+            color: var(--lilas-profundo);
+            transform: scale(1.2);
+        }
+        
+        /* Navegação modal */
+        .modal-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--lilas-escuro);
+            color: var(--branco);
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-nav:hover {
+            background: var(--lilas-profundo);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .modal-anterior {
+            left: -60px;
+        }
+        
+        .modal-proximo {
+            right: -60px;
+        }
+        
+        /* Contador de itens */
+        .contador {
+            text-align: center;
+            margin-top: 15px;
+            color: var(--lilas-escuro);
+            font-weight: bold;
+        }
+        
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* Efeito de carregamento */
+        .loading {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .loading.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .galeria-container {
+                margin: 10px;
+                padding: 20px;
+            }
+            
+            .galeria-title {
+                font-size: 2.2rem;
+            }
+            
+            .galeria-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .galeria-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .filtros {
+                justify-content: center;
+            }
+            
+            .modal-conteudo {
+                width: 95%;
+                margin: 10% auto;
+                padding: 15px;
+            }
+            
+            .modal-nav {
+                display: none;
+            }
+            
+            .nav-volta {
+                position: relative;
+                display: inline-block;
+                margin: 0 auto 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .galeria-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .galeria-item img,
+            .galeria-item video {
+                height: 200px;
+            }
+            
+            .filtro-btn {
+                padding: 6px 15px;
+                font-size: 0.8rem;
+            }
+        }
+        
+        /* Efeito de jornal envelhecido */
+        .galeria-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h100v100H0z' fill='%23000' fill-opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        /* Estilo para vídeos */
+        .video-item {
+            position: relative;
+        }
+        
+        .video-item::after {
+            content: '\f04b';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 3rem;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+            pointer-events: none;
+        }
+
+        /* Badge de categoria */
+        .categoria-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--lilas-escuro);
+            color: var(--branco);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 5;
+        }
+    </style>
+</head>
+<body>
+    <div class="galeria-container">
+        <!-- Navegação de volta -->
+        <a href="../index.html" class="nav-volta">
+            <i class="fas fa-arrow-left"></i> Voltar ao Jornal
+        </a>
+        
+        <!-- Cabeçalho da galeria -->
+        <header class="galeria-header">
+            <h1 class="galeria-title">Resultado pesquisa sobre Bullying</h1>
+            <p class="galeria-subtitle">
+                
+Após a pesquisa realizada pelos alunos, os tablets geraram gráficos com as respostas, conforme ilustrado nas imagens abaixo. 📊
+
+A partir desses gráficos, foi possível dar início a um debate aprofundado sobre o tema, permitindo que os alunos analisassem os dados, compartilhassem suas ideias e refletissem sobre atitudes de respeito, empatia e prevenção ao bullying. 💬
+
+            </p>
+        </header>
+        
+        <!-- Filtros de categoria -->
+        <div class="filtros">
+            <!-- <button class="filtro-btn ativo" data-categoria="todos">
+                <i class="fas fa-th"></i> Todos
+            </button> -->
+            <button class="filtro-btn" data-categoria="atividades">
+                <i class="fas fa-users"></i> Fotos
+            </button>
+            <!-- <button class="filtro-btn" data-categoria="tecnologia">
+                <i class="fas fa-tablet-alt"></i> Tecnologia
+            </button>
+            <button class="filtro-btn" data-categoria="apresentacoes">
+                <i class="fas fa-presentation"></i> Apresentações
+            </button> 
+            <button class="filtro-btn" data-categoria="videos">
+                <i class="fas fa-video"></i> Vídeos
+            </button>-->
+        </div>
+        
+        <!-- Grid da galeria -->
+        <div class="galeria-grid" id="galeriaGrid">
+            <!-- Imagem 1 - Atividade com tablets -->
+        
+
+              <div class="galeria-item loading" data-categoria="tecnologia atividades">
+                             <img src="../imagens/graficos/grafico (2).jpg" alt="Alunos usando tablets para pesquisa sobre bullying">
+                <div class="item-overlay">
+                    <i class="fas fa-search-plus"></i>
+                    <span>Visualizar</span>
+                </div>
+                <div class="item-legenda">Sentimento em relação ao Bullying?
+                </div>
+            </div>
+
+              <div class="galeria-item loading" data-categoria="tecnologia atividades">
+                             <img src="../imagens/graficos/grafico (3).jpg" alt="Alunos usando tablets para pesquisa sobre bullying">
+                <div class="item-overlay">
+                    <i class="fas fa-search-plus"></i>
+                    <span>Visualizar</span>
+                </div>
+                <div class="item-legenda">
+                    Presenciou Bullying?
+                </div>
+            </div>
+
+              <div class="galeria-item loading" data-categoria="tecnologia atividades">
+                             <img src="../imagens/graficos/grafico (4).jpg" alt="Alunos usando tablets para pesquisa sobre bullying">
+                <div class="item-overlay">
+                    <i class="fas fa-search-plus"></i>
+                    <span>Visualizar</span>
+                </div>
+                <div class="item-legenda">
+                    Ja sofreu Bullying?
+                </div>
+            </div>
+
+              <div class="galeria-item loading" data-categoria="tecnologia atividades">
+                             <img src="../imagens/graficos/grafico (5).jpg" alt="Alunos usando tablets para pesquisa sobre bullying">
+                <div class="item-overlay">
+                    <i class="fas fa-search-plus"></i>
+                    <span>Visualizar</span>
+                </div>
+                <div class="item-legenda">
+                   Atitude Diante do Bullying?
+                </div>
+            </div>
+            
+        
+            
+        
+
+        
+        <!-- Contador de itens -->
+     
+    </div>
+    
+    <!-- Modal para visualização ampliada -->
+    <div id="modal" class="modal">
+        <div class="modal-conteudo">
+            <span class="modal-fechar">&times;</span>
+            <button class="modal-nav modal-anterior"><i class="fas fa-chevron-left"></i></button>
+            <button class="modal-nav modal-proximo"><i class="fas fa-chevron-right"></i></button>
+            <div id="modalMidia"></div>
+            <div class="modal-legenda" id="modalLegenda"></div>
+            <div class="contador" id="modalContador"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementos
+            const galeriaGrid = document.getElementById('galeriaGrid');
+            const modal = document.getElementById('modal');
+            const modalMidia = document.getElementById('modalMidia');
+            const modalLegenda = document.getElementById('modalLegenda');
+            const modalContador = document.getElementById('modalContador');
+            const modalFechar = document.querySelector('.modal-fechar');
+            const modalAnterior = document.querySelector('.modal-anterior');
+            const modalProximo = document.querySelector('.modal-proximo');
+            const filtros = document.querySelectorAll('.filtro-btn');
+            const contadorTexto = document.getElementById('contadorTexto');
+            
+            let itensVisiveis = [];
+            let itemAtual = 0;
+            
+            // Animação de carregamento
+            setTimeout(() => {
+                const itensLoading = document.querySelectorAll('.loading');
+                itensLoading.forEach((item, index) => {
+                    setTimeout(() => {
+                        item.classList.add('loaded');
+                    }, index * 100);
+                });
+            }, 300);
+            
+            // Filtros
+            filtros.forEach(filtro => {
+                filtro.addEventListener('click', function() {
+                    // Remover classe ativo de todos
+                    filtros.forEach(f => f.classList.remove('ativo'));
+                    // Adicionar classe ativo ao clicado
+                    this.classList.add('ativo');
+                    
+                    const categoria = this.dataset.categoria;
+                    filtrarItens(categoria);
+                });
+            });
+            
+            function filtrarItens(categoria) {
+                const todosItens = document.querySelectorAll('.galeria-item');
+                let itensVisiveis = 0;
+                
+                todosItens.forEach(item => {
+                    if (categoria === 'todos' || item.dataset.categoria.includes(categoria)) {
+                        item.style.display = 'block';
+                        item.style.animation = 'fadeIn 0.5s ease forwards';
+                        itensVisiveis++;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                
+                // Atualizar contador
+                const totalItens = todosItens.length;
+                contadorTexto.textContent = `Exibindo ${itensVisiveis} itens de ${totalItens}`;
+                
+                // Atualizar lista de itens visíveis para o modal
+                atualizarItensVisiveis();
+            }
+            
+            function atualizarItensVisiveis() {
+                itensVisiveis = Array.from(document.querySelectorAll('.galeria-item'))
+                    .filter(item => item.style.display !== 'none');
+            }
+            
+            // Inicializar itens visíveis
+            atualizarItensVisiveis();
+            
+            // Abrir modal
+            galeriaGrid.addEventListener('click', function(e) {
+                const item = e.target.closest('.galeria-item');
+                if (!item || item.style.display === 'none') return;
+                
+                itemAtual = itensVisiveis.indexOf(item);
+                mostrarModal(item);
+            });
+            
+            function mostrarModal(item) {
+                const img = item.querySelector('img');
+                const video = item.querySelector('video');
+                const legenda = item.querySelector('.item-legenda').textContent;
+                
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+                
+                // Limpar conteúdo anterior
+                modalMidia.innerHTML = '';
+                
+                if (img) {
+                    const modalImg = document.createElement('img');
+                    modalImg.src = img.src;
+                    modalImg.alt = img.alt;
+                    modalMidia.appendChild(modalImg);
+                } else if (video) {
+                    const modalVideo = document.createElement('video');
+                    modalVideo.src = video.src;
+                    modalVideo.controls = true;
+                    modalVideo.autoplay = true;
+                    modalMidia.appendChild(modalVideo);
+                }
+                
+                modalLegenda.textContent = legenda;
+                modalContador.textContent = `${itemAtual + 1} de ${itensVisiveis.length}`;
+            }
+            
+            // Fechar modal
+            modalFechar.addEventListener('click', fecharModal);
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    fecharModal();
+                }
+            });
+            
+            function fecharModal() {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                
+                // Parar vídeos
+                const videos = modalMidia.querySelectorAll('video');
+                videos.forEach(video => video.pause());
+            }
+            
+            // Navegação do modal
+            modalAnterior.addEventListener('click', function() {
+                itemAtual = itemAtual > 0 ? itemAtual - 1 : itensVisiveis.length - 1;
+                mostrarModal(itensVisiveis[itemAtual]);
+            });
+            
+            modalProximo.addEventListener('click', function() {
+                itemAtual = itemAtual < itensVisiveis.length - 1 ? itemAtual + 1 : 0;
+                mostrarModal(itensVisiveis[itemAtual]);
+            });
+            
+            // Navegação por teclado
+            document.addEventListener('keydown', function(e) {
+                if (modal.style.display === 'block') {
+                    switch(e.key) {
+                        case 'Escape':
+                            fecharModal();
+                            break;
+                        case 'ArrowLeft':
+                            modalAnterior.click();
+                            break;
+                        case 'ArrowRight':
+                            modalProximo.click();
+                            break;
+                    }
+                }
+            });
+            
+            // Efeitos de hover aprimorados
+            const itens = document.querySelectorAll('.galeria-item');
+            itens.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px) rotate(1deg)';
+                    this.style.boxShadow = '8px 12px 0px var(--sombra)';
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) rotate(0deg)';
+                    this.style.boxShadow = '5px 5px 0px var(--sombra)';
+                });
+            });
+            
+            // Lazy loading para imagens futuras
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        if (img.dataset.src) {
+                            img.src = img.dataset.src;
+                            img.removeAttribute('data-src');
+                            observer.unobserve(img);
+                        }
+                    }
+                });
+            });
+            
+            // Observar imagens com data-src
+            document.querySelectorAll('img[data-src]').forEach(img => {
+                observer.observe(img);
+            });
+            
+            // Animação de entrada nos filtros
+            filtros.forEach((filtro, index) => {
+                filtro.style.animation = `fadeIn 0.5s ease forwards ${index * 0.1}s`;
+            });
+        });
+    </script>
+</body>
+</html>

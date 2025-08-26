@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jornal Educacional - Projeto Bullying</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* Variáveis de cores */
+        :root {
+            --lilas-claro: #e6e6fa;
+            --lilas-medio: #d8bfd8;
+            --lilas-escuro: #9370db;
+            --lilas-profundo: #6a5acd;
+            --texto-escuro: #4b0082;
+            --branco: #ffffff;
+            --offwhite: #f8f8ff;
+            --sombra: rgba(106, 90, 205, 0.2);
+            --linha: #d8bfd8;
+        }
+        
+        /* Reset e estilos base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: var(--lilas-claro);
+            color: #333;
+            line-height: 1.6;
+            font-family: 'Merriweather', serif;
+            padding: 0;
+            margin: 0;
+            background-image: 
+                linear-gradient(rgba(230, 230, 250, 0.7), rgba(230, 230, 250, 0.7)), 
+                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h100v100H0z' fill='%239370db' fill-opacity='0.05'/%3E%3C/svg%3E");
+        }
+        
+        .jornal-container {
+            max-width: 1000px;
+            margin: 20px auto;
+            background: var(--offwhite);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--lilas-medio);
+            padding: 20px;
+            position: relative;
+        }
+        
+        /* Cabeçalho estilo jornal */
+        .jornal-header {
+            text-align: center;
+            border-bottom: 3px double var(--lilas-escuro);
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .jornal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            color: var(--lilas-profundo);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin: 0;
+            text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+        }
+        
+        .jornal-subtitle {
+            font-style: italic;
+            color: var(--texto-escuro);
+            font-size: 1.2rem;
+            margin: 5px 0 15px;
+        }
+        
+        .jornal-date {
+            font-weight: bold;
+            color: var(--lilas-escuro);
+            text-transform: uppercase;
+        }
+        
+        /* Menu de navegação */
+        .jornal-nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .jornal-nav a {
+            color: var(--texto-escuro);
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            border: 1px solid var(--lilas-medio);
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+        
+        .jornal-nav a:hover {
+            background-color: var(--lilas-medio);
+            color: var(--branco);
+        }
+        
+        /* Layout de colunas */
+        .conteudo-principal {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .coluna-principal {
+            border-right: 1px dashed var(--linha);
+            padding-right: 25px;
+        }
+        
+        .coluna-lateral {
+            padding-left: 10px;
+        }
+        
+        /* Manchetes e títulos */
+        .manchete {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: var(--lilas-profundo);
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--lilas-medio);
+            padding-bottom: 10px;
+        }
+        
+        .subtitulo {
+            font-style: italic;
+            color: var(--texto-escuro);
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        /* Seção da professora */
+        .professora {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            align-items: center;
+        }
+        
+        .professora-img {
+            width: 200px;
+            height: 200px;
+            border-radius: 5px;
+            object-fit: cover;
+            border: 3px solid var(--lilas-medio);
+            box-shadow: 5px 5px 0px var(--sombra);
+            flex-shrink: 0;
+        }
+        
+        .professora-info h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--lilas-profundo);
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        
+        .professora-info p {
+            text-align: justify;
+            margin-bottom: 15px;
+        }
+        
+        /* Artigos */
+        .artigo {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed var(--linha);
+        }
+        
+        .artigo:last-child {
+            border-bottom: none;
+        }
+        
+        .artigo-titulo {
+            font-family: 'Playfair Display', serif;
+            color: var(--lilas-profundo);
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .artigo-meta {
+            font-style: italic;
+            color: var(--lilas-escuro);
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+        
+        /* Galeria de mídia */
+        .galeria-jornal {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .midia-item {
+            position: relative;
+            border: 2px solid var(--lilas-medio);
+            padding: 5px;
+            background: var(--branco);
+            box-shadow: 5px 5px 0px var(--sombra);
+            transition: all 0.3s ease;
+        }
+        
+        .midia-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 8px 8px 0px var(--sombra);
+        }
+        
+        .midia-item img {
+            width: 100%;
+            display: block;
+        }
+        
+        .midia-legenda {
+            padding: 10px;
+            background: var(--lilas-claro);
+            font-size: 0.9rem;
+            font-style: italic;
+            text-align: center;
+            border-top: 1px solid var(--lilas-medio);
+        }
+        
+        .video-placeholder {
+            position: relative;
+            padding-top: 56.25%;
+            background: var(--lilas-medio);
+        }
+        
+        .video-placeholder i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            color: var(--branco);
+        }
+        
+        /* Barra lateral */
+        .barra-lateral {
+            background: var(--lilas-claro);
+            padding: 15px;
+            border: 1px solid var(--lilas-medio);
+            margin-bottom: 20px;
+        }
+        
+        .barra-lateral h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--lilas-profundo);
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--lilas-medio);
+        }
+        
+        .barra-lateral ul {
+            list-style: none;
+        }
+        
+        .barra-lateral li {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dotted var(--linha);
+        }
+        
+        .barra-lateral li:last-child {
+            border-bottom: none;
+        }
+        
+        .barra-lateral a {
+            color: var(--texto-escuro);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .barra-lateral a:hover {
+            color: var(--lilas-profundo);
+            text-decoration: underline;
+        }
+        
+        /* Rodapé */
+        .jornal-footer {
+            text-align: center;
+            border-top: 3px double var(--lilas-escuro);
+            padding-top: 20px;
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: var(--lilas-escuro);
+        }
+        
+        .social-icons {
+            margin: 15px 0;
+        }
+        
+        .social-icons a {
+            color: var(--lilas-escuro);
+            font-size: 1.5rem;
+            margin: 0 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .social-icons a:hover {
+            transform: translateY(-5px);
+            color: var(--lilas-profundo);
+        }
+        
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fadeIn {
+            animation: fadeIn 1s ease forwards;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .conteudo-principal {
+                grid-template-columns: 1fr;
+            }
+            
+            .coluna-principal {
+                border-right: none;
+                padding-right: 0;
+            }
+            
+            .jornal-title {
+                font-size: 2.5rem;
+            }
+            
+            .galeria-jornal {
+                grid-template-columns: 1fr;
+            }
+            
+            .professora {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .professora-img {
+                width: 150px;
+                height: 150px;
+            }
+        }
+        
+        /* Efeitos de jornal envelhecido */
+        .jornal-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h100v100H0z' fill='%23000' fill-opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+        
+        /* Estilo para citações */
+        .citacao {
+            font-style: italic;
+            border-left: 3px solid var(--lilas-medio);
+            padding-left: 15px;
+            margin: 20px 0;
+            color: var(--lilas-escuro);
+        }
+        
+        /* Estilo para destaques */
+        .destaque {
+            background: var(--lilas-claro);
+            padding: 15px;
+            border: 1px solid var(--lilas-medio);
+            margin: 20px 0;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="jornal-container">
+        <!-- Cabeçalho estilo jornal -->
+        <header class="jornal-header">
+            <h1 class="jornal-title">Jornal Educacional</h1>
+            <p class="jornal-subtitle">Notícias e Informações para a Comunidade Escolar</p>
+            <p class="jornal-date">Sexta-feira, 24 de Maio de 2023</p>
+            
+            <nav class="jornal-nav">
+                <a href="index.html">Início</a>
+                <a href="paginas/tecbully.html">Projeto Bullying</a>
+                <a href="paginas/pm.html">Visita PM</a>
+           <a href="paginas/graficos.html">Gráficos</a>
+                    <!--  <a href="eventos.html">Eventos</a> -->
+            </nav>
+        </header>
+        
+        <main class="conteudo-principal">
+            <!-- Coluna principal -->
+            <div class="coluna-principal">
+                <h2 class="manchete">Projeto de Conscientização sobre Bullying nas Escolas</h2>
+                <!-- <p class="subtitulo">Professora Francine Melo lidera iniciativa que já impactou mais de 2.000 estudantes</p> -->
+                
+                <!-- Seção da professora -->
+                <article class="artigo professora animate-fadeIn">
+                    <img src="imagens/img (55).jpg" class="professora-img">
+                    <div class="professora-info">
+                       
+                        <h2>✨ Professora Francine Melo ✨</h2>
+<p>Acredito que a educação é a maior ferramenta de transformação que temos para construir um futuro melhor. Educar é semear com carinho e colher com paciência, pois cada criança aprende no seu próprio tempo, e todas são capazes de florescer quando recebem cuidado e incentivo. 🌱💫</p>
+
+<p>A tecnologia, quando usada com propósito, amplia horizontes e se torna uma grande parceira no aprendizado, despertando curiosidade e fortalecendo o caminho do conhecimento. 💻📚</p>
+
+<p>Ser professora é acreditar, todos os dias, que a educação transforma vidas. </p>
+                    </div>
+                </article>
+                
+                <!-- Artigo sobre o projeto -->
+                <article class="artigo">
+                    <h3 class="artigo-titulo"> Alunos do 4º ano C da EMEF Professor João Cardoso desenvolvem jornal sobre combate ao bullying</h3>
+                    <p class="artigo-meta">
+Durante o mês de agosto, os alunos do 4º ano C da EMEF Professor João Cardoso de Siqueira Primo, em Biritiba Mirim, realizaram um projeto especial voltado para a conscientização sobre o combate ao bullying.</p>
+                    
+                    <p>
+Com o apoio dos tablets escolares, os estudantes criaram um questionário e aplicaram uma pesquisa em todas as salas do período da tarde. As perguntas abordaram situações do cotidiano, buscando compreender como os colegas percebem o bullying e quais estratégias podem ser adotadas para enfrentá-lo no ambiente escolar.</p>
+
+<p>Após a coleta de dados, a turma organizou e analisou as respostas, transformando as informações em um material dinâmico e informativo: o “Jornal Combate ao Bullying no João Cardoso”.
+</p>
+                    
+                    <div class="citacao">
+                       O jornal reúne relatos, reflexões e mensagens de conscientização produzidas pelos próprios alunos. O objetivo foi sensibilizar toda a comunidade escolar para a importância do respeito, da empatia e da convivência harmoniosa entre os estudantes.
+                    </div>
+                    
+                    <p>Segundo a professora Francine Melo, responsável pela turma, a iniciativa trouxe resultados muito positivos: “Os alunos se engajaram, refletiram sobre suas atitudes e compreenderam que pequenas ações podem gerar grandes mudanças no ambiente escolar”.</p>
+                    
+                    <div class="destaque">
+                        <p>O projeto mostrou que a educação, aliada à tecnologia, é uma ferramenta poderosa para formar cidadãos mais conscientes, críticos e solidários.</p>
+                    </div>
+
+                
+
+
+
+
+
+
+
+
+
+                </article>
+                
+                <!-- Galeria de mídia -->
+                <h3 class="artigo-titulo">Galeria do Projeto</h3>
+                <a href="paginas/tecbully.html">
+                    <div class="galeria-jornal">
+                        <div class="midia-item">
+                            <img  src="imagens/img (24).jpg" alt="Palestra sobre Bullying">
+                            <div class="midia-legenda">Tecnologia contra o Bullying</div>
+                        </div>
+                </a>
+                    
+                    <a href="paginas/pm.html">
+                        <div class="midia-item">
+                           <img  src="imagens/img (60).jpg" alt="Palestra sobre Bullying">
+                            <div class="midia-legenda">Combate ao Bulling com a Policia Militar</div>
+                        </div>
+                    </a>
+                    
+                    <a href="paginas/graficos.html">
+                        <div class="midia-item">
+                            <img src="imagens/gtaf.png" alt="Atividade em Grupo">
+                            <div class="midia-legenda">Gráficos para refletir</div>
+                        </div>
+                    </a>
+                    
+                    <!-- <div class="midia-item">
+                        <div class="video-placeholder">
+                            <i class="fas fa-play-circle"></i>
+                        </div>
+                        <div class="midia-legenda">Encenação teatral mostrando como identificar e combater situações de bullying</div>
+                    </div>  -->
+                </div>
+            </div>
+            
+            <!-- Coluna lateral -->
+            <div class="coluna-lateral">
+                <div class="barra-lateral">
+                    <h3>Mais Notícias</h3>
+                    <ul>
+                        <li><a href="paginas/tecbully.html">Inovação e empatia: usando a tecnologia para prevenir o bullying na escola</a></li>
+                        <li><a href="paginas/pm.html">Combate ao Bullying com apoio da Policia Militar</a></li>
+                         <li><a href="paginas/graficos.html">Resultado da Pesquisa com os alunos</a></li>
+                       <!-- <li><a href="#">Evento cultural reúne estudantes de 15 escolas no próximo sábado</a></li>
+                        <li><a href="#">Entrevista exclusiva com especialista em educação inclusiva</a></li> -->
+                    </ul>
+                </div>
+                
+                <div class="barra-lateral">
+                    <h3>Próximos Eventos</h3>
+                    <ul>
+                        <li><strong>Outubro</strong> Erradicação Trabalho Infantil</li>
+                        <li><strong>Novembro</strong> Cultura Afro Brasileira</li>
+                       <li><strong>Em Breve</strong> Boas Vindas a PRimevera</li>
+                        <!--  <li><strong>20/06:</strong> Encontro de ex-alunos que superaram o bullying</li> -->
+                    </ul>
+                </div>
+                
+                <!-- <div class="barra-lateral">
+                    <h3>Entre em Contato</h3>
+                    <p>Para mais informações sobre o projeto ou para agendar uma visita em sua escola:</p>
+                    <p>Email: <a href="mailto:professora.francine@educacao.com">professora.francine@educacao.com</a></p>
+                    <p>Telefone: (11) 3456-7890</p>
+                </div> -->
+            </div>
+        </main>
+        
+        <!-- Rodapé -->
+        <footer class="jornal-footer">
+            <p>Jornal Educacional • Edição nº 001 • Distribuição gratuita</p>
+          
+            <p>Projeto desenvolvido pela Professora Francine Melo • 2025</p>
+        </footer>
+    </div>
+
+    <script>
+        // Interatividade para as imagens
+        document.addEventListener('DOMContentLoaded', function() {
+            const midiaItems = document.querySelectorAll('.midia-item');
+            
+            midiaItems.forEach(item => {
+                item.addEventListener('mouseover', function() {
+                    this.style.boxShadow = '8px 8px 0px var(--sombra)';
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                item.addEventListener('mouseout', function() {
+                    this.style.boxShadow = '5px 5px 0px var(--sombra)';
+                    this.style.transform = 'translateY(0)';
+                });
+                
+                // Adicionar teclado acessível
+                item.setAttribute('tabindex', '0');
+                item.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        this.querySelector('a')?.click();
+                    }
+                });
+            });
+            
+            // Efeito de carregamento suave para as imagens
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                img.addEventListener('load', function() {
+                    this.style.opacity = '1';
+                });
+                img.style.transition = 'opacity 0.5s ease';
+                img.style.opacity = '0';
+            });
+            
+            // Simular data atual no cabeçalho
+            const hoje = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.querySelector('.jornal-date').textContent = hoje.toLocaleDateString('pt-BR', options);
+        });
+    </script>
+</body>
+</html>
